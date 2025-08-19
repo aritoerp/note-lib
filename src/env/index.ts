@@ -1,0 +1,1 @@
+export const BACKEND_HOST: string = "https://thuvien.truongso.vn";
