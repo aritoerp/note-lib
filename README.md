@@ -1,2 +1,2 @@
 # note-lib
-Thư viện
+Thư viện note-lib
