@@ -53,10 +53,10 @@ const Layout: React.FC = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <img
-                src="https://raw.githubusercontent.com/aritoerp/assets/refs/heads/main/notelibrary-02.png"
-                alt="NoteLib Logo" 
-                style={{height:"64px"}}
-              /> 
+                src="/images/logo.png"
+                alt="NoteLib Logo"
+                className="h-16 cursor-pointer"
+              />
             </Link>
 
             {/* Search Bar - Desktop */}

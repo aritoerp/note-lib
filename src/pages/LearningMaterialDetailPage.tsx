@@ -1,13 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { learningMaterials } from '../data/mockData';
 import { ChevronLeft, Eye, Calendar, User, Play, Download, Share2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { BACKEND_HOST } from '../env';
+import { getFileUrl } from '../utils/fileUtils';
 
 const LearningMaterialDetailPage: React.FC = () => {
-  const { materialId } = useParams<{ materialId: string }>();
   const navigate = useNavigate();
+  const { materialCode } = useParams<{ materialCode: string }>();
+  const { accessToken, logout } = useAuth();
+  const [material, setMaterial] = React.useState<any | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const material = learningMaterials.find(m => m.id === materialId);
+  useEffect(() => {
+    console.log(getFileUrl(accessToken, ''))
+
+    const materialtype = materialCode?.split('-')[0], materialId = materialCode != undefined ? parseInt(materialCode?.split('-')[1]) : 0;
+
+    const fetchMaterial = async () => {
+      setLoading(true);
+      setError(null);
+      if (!accessToken) {
+        window.location.href = '/login';
+        return;
+      }
+      try {
+        const data = JSON.stringify({
+          accessToken,
+          memvars: {
+            type: materialtype,
+            id: materialId,
+            pageIndex: 0
+          }
+        });
+        const response = await axios.post(`${BACKEND_HOST}/euresource`, data, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {
+          setMaterial(response.data.data[0]);
+        } else {
+          setError('Không lấy được học liệu');
+          throw new Error('Không lấy được học liệu');
+        }
+      } catch (err) {
+        setError('Lỗi khi gọi API');
+        logout();
+      }
+      setLoading(false);
+    };
+    fetchMaterial();
+  }, [accessToken]);
 
   if (!material) {
     return (
@@ -27,11 +72,11 @@ const LearningMaterialDetailPage: React.FC = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'video':
+      case 'VIDEO':
         return 'bg-red-100 text-red-800';
-      case 'image':
+      case 'IMAGE':
         return 'bg-green-100 text-green-800';
-      case 'audio':
+      case 'AUDIO':
         return 'bg-purple-100 text-purple-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -40,11 +85,11 @@ const LearningMaterialDetailPage: React.FC = () => {
 
   const getTypeName = (type: string) => {
     switch (type) {
-      case 'video':
-        return 'Video';
-      case 'image':
+      case 'VIDEO':
+        return 'VIDEO';
+      case 'IMAGE':
         return 'Hình ảnh';
-      case 'audio':
+      case 'AUDIO':
         return 'Sách nói';
       default:
         return type;
@@ -53,7 +98,7 @@ const LearningMaterialDetailPage: React.FC = () => {
 
   const renderContent = () => {
     switch (material.type) {
-      case 'video':
+      case 'VIDEO':
         return (
           <div className="bg-black rounded-xl overflow-hidden aspect-video">
             <div className="w-full h-full flex items-center justify-center text-white">
@@ -65,17 +110,17 @@ const LearningMaterialDetailPage: React.FC = () => {
             </div>
           </div>
         );
-      case 'image':
+      case 'IMAGE':
         return (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <img
-              src={material.url}
-              alt={material.title}
+              src={getFileUrl(accessToken, material.image_id, '/images/400x400.svg')}
+              alt={material.text}
               className="w-full h-auto max-h-96 object-contain"
             />
           </div>
         );
-      case 'audio':
+      case 'AUDIO':
         return (
           <div className="bg-gray-100 rounded-xl p-8">
             <div className="text-center">
@@ -125,9 +170,9 @@ const LearningMaterialDetailPage: React.FC = () => {
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {material.title}
+            {material.text}
           </h1>
-          <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
+          {/* <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
             <div className="flex items-center space-x-1">
               <Eye className="h-4 w-4" />
               <span>{material.views.toLocaleString()} lượt xem</span>
@@ -140,7 +185,7 @@ const LearningMaterialDetailPage: React.FC = () => {
               <User className="h-4 w-4" />
               <span>bởi {material.uploader}</span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Content */}
@@ -155,12 +200,7 @@ const LearningMaterialDetailPage: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Mô tả</h2>
           <div className="prose prose-gray max-w-none">
             <p className="text-gray-700 leading-relaxed">
-              {material.description}
-            </p>
-            <p className="text-gray-700 leading-relaxed mt-4">
-              Đây là một tài liệu học tập chất lượng cao được tạo ra bởi các chuyên gia 
-              trong lĩnh vực. Nội dung được trình bày một cách khoa học và dễ hiểu, 
-              phù hợp cho việc học tập và nghiên cứu.
+              {material.note}
             </p>
           </div>
         </div>
@@ -181,7 +221,7 @@ const LearningMaterialDetailPage: React.FC = () => {
         </div>
 
         {/* Related Materials */}
-        <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
+        {/* <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Học liệu liên quan</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {learningMaterials
@@ -209,7 +249,7 @@ const LearningMaterialDetailPage: React.FC = () => {
                 </div>
               ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

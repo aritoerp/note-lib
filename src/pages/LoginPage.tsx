@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { BookOpen, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -43,9 +43,12 @@ const LoginPage: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center items-center space-x-2 mb-6">
-            <BookOpen className="h-12 w-12 text-blue-600" />
-            <span className="text-3xl font-bold text-gray-900">NoteLib</span>
+          <div className="flex justify-center items-center space-x-2">
+            <img
+              src="/images/logo.png"
+              alt="NoteLib Logo"
+              className="h-24"
+            />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Chào mừng trở lại

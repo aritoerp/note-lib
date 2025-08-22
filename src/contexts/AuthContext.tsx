@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios'; // Import axios
+import { BACKEND_HOST } from '../env';
 
 // --- Các interface không thay đổi ---
 interface User {
@@ -81,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (username: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const response = await axios.post('https://thuvien.truongso.vn/web/login', {
+      const response = await axios.post(`${BACKEND_HOST}/login`, {
         username: username,
         password: password,
       }, {
@@ -114,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
       }
     } catch (error) {
-      console.error("An error occurred during login:", error);
+      console.error('An error occurred during login:', error);
       setIsLoading(false);
       return false;
     }

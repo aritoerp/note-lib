@@ -1,25 +1,17 @@
-import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getFileUrl } from '../utils/fileUtils';
 
-// (removed duplicate component and code)
+import { BACKEND_HOST } from '../env';
+
 const CategoryBooksPage: React.FC = () => {
-  // Helper to get image url from image_id
   const { accessToken, logout } = useAuth();
-  const getImageUrl = (image_id: string | null | undefined) => {
-    if (image_id && accessToken) {
-      const tokenPart = accessToken.split(".")[2];
-      return `https://api2dev.arito.vn/api/v1/DownloadFile0/${image_id}/${tokenPart}`;
-    }
-    return 'https://placehold.co/400x400';
-  };
   const { categoryId } = useParams<{ categoryId: string }>();
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -38,7 +30,7 @@ const CategoryBooksPage: React.FC = () => {
             pageIndex: 0
           }
         });
-        const response = await axios.post('https://thuvien.truongso.vn/web/ebooks', data, {
+        const response = await axios.post(`${BACKEND_HOST}/ebooks`, data, {
           headers: { 'Content-Type': 'application/json' }
         });
         if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {
@@ -92,7 +84,7 @@ const CategoryBooksPage: React.FC = () => {
             <Link key={book.id} to={`/books/${book.id}`} className="block group">
               <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                 <img
-                  src={getImageUrl(book.image_id)}
+                  src={getFileUrl(accessToken, book.image_id, '/images/400x400.svg')}
                   alt={book.text}
                   className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                 />

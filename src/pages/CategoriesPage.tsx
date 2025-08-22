@@ -29,7 +29,7 @@ const CategoriesPage: React.FC = () => {
             pageIndex: 0
           }
         });
-        const response = await axios.post(BACKEND_HOST+'/web/categories', data, {
+        const response = await axios.post(`${BACKEND_HOST}/categories`, data, {
           headers: { 'Content-Type': 'application/json' }
         });
         if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {

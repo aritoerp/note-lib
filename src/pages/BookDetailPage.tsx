@@ -4,11 +4,13 @@ import { useAuth } from '../contexts/AuthContext';
 // ...existing code...
 import { ChevronLeft, Eye, Download, Calendar, Building, BookOpen, ShoppingCart, FileText } from 'lucide-react';
 import axios from 'axios';
+import { BACKEND_HOST } from '../env';
+import { getFileUrl } from '../utils/fileUtils';
 
 const BookDetailPage: React.FC = () => {
-  const { bookId } = useParams<{ bookId: string }>();
-  const { user, addToBorrowed, addToRead, accessToken, logout } = useAuth();
   const navigate = useNavigate();
+  const { user, addToBorrowed, addToRead, accessToken, logout } = useAuth();
+  const { bookId } = useParams<{ bookId: string }>();
   const [book, setBook] = React.useState<any | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -30,7 +32,7 @@ const BookDetailPage: React.FC = () => {
             pageIndex: 0
           }
         });
-        const response = await axios.post('https://thuvien.truongso.vn/web/ebooks', data, {
+        const response = await axios.post(`${BACKEND_HOST}/ebooks`, data, {
           headers: { 'Content-Type': 'application/json' }
         });
         if (response.data && response.data.code === 200 && Array.isArray(response.data.data) && response.data.data.length > 0) {
@@ -64,14 +66,6 @@ const BookDetailPage: React.FC = () => {
     }
   };
 
-  const getImageUrl = (image_id: string | null | undefined) => {
-    if (image_id && accessToken) {
-      const tokenPart = accessToken.split(".")[2];
-      return `https://api2dev.arito.vn/api/v1/DownloadFile0/${image_id}/${tokenPart}`;
-    }
-    return 'https://placehold.co/400x400';
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back Button */}
@@ -79,7 +73,7 @@ const BookDetailPage: React.FC = () => {
         onClick={() => navigate(-1)}
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-8 transition-colors"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-5 w-5"/>
         <span>Quay lại</span>
       </button>
 
@@ -96,7 +90,7 @@ const BookDetailPage: React.FC = () => {
             <div className="sticky top-8">
               <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                 <img
-                  src={getImageUrl(book.image_id)}
+                  src={getFileUrl(accessToken, book.image_id, '/images/400x400.svg')}
                   alt={book.text || 'Không có tên'}
                   className="w-full h-96 object-cover"
                 />
@@ -108,7 +102,7 @@ const BookDetailPage: React.FC = () => {
                       className={`w-full py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${book.file_id ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                       style={!book.file_id ? { pointerEvents: 'none' } : undefined}
                     >
-                      <BookOpen className="h-5 w-5" />
+                      <BookOpen className="h-5 w-5"/>
                       <span>Đọc sách</span>
                     </button>
                     {!book.file_id && (
@@ -123,7 +117,7 @@ const BookDetailPage: React.FC = () => {
                       className="w-full py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors bg-gray-300 text-gray-500 cursor-not-allowed"
                       style={{ pointerEvents: 'none' }}
                     >
-                      <ShoppingCart className="h-5 w-5" />
+                      <ShoppingCart className="h-5 w-5"/>
                       <span>Mượn sách</span>
                     </button>
                     <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block bg-black text-white text-xs rounded px-3 py-2 whitespace-nowrap z-10">

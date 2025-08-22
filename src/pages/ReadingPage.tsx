@@ -5,6 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import HTMLFlipBook from 'react-pageflip';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext'; // <-- THÊM IMPORT NÀY
+import { API_HOST, BACKEND_HOST } from '../env';
 
 // --- Cấu hình Worker cho react-pdf ---
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf.worker.min.mjs`;
@@ -27,7 +28,6 @@ interface BookData {
     file_id: string;
     // Thêm các thuộc tính khác nếu cần
 }
-
 
 const ReadingPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
@@ -81,7 +81,7 @@ const ReadingPage: React.FC = () => {
           }
         };
 
-        const response = await axios.post('https://thuvien.truongso.vn/web/ebooks', payload, {
+        const response = await axios.post(`${BACKEND_HOST}/ebooks`, payload, {
           headers: { 'Content-Type': 'application/json' }
         });
 
@@ -92,7 +92,7 @@ const ReadingPage: React.FC = () => {
           // Xây dựng URL để tải PDF
           if (bookData.file_id) {
             const tokenPart = accessToken.split(".")[2];
-            const finalPdfUrl = `https://thuvien.truongso.vn/web/download-pdf?pdfUrl=https://api2dev.arito.vn/api/v1/DownloadFile0/${bookData.file_id}/${tokenPart}`;
+            const finalPdfUrl = `${BACKEND_HOST}/download-pdf?pdfUrl=${API_HOST}/DownloadFile0/${bookData.file_id}/${tokenPart}`;
             setPdfUrl(finalPdfUrl);
           } else {
             setApiError('Sách này không có file đính kèm.');
@@ -237,14 +237,14 @@ const ReadingPage: React.FC = () => {
           <div style={{ transform: `scale(${zoom / 120})` }}>
             <div style={{ width: pageWidth * 2, height: pageHeight+140, backgroundColor:"transparent"}}>
               <HTMLFlipBook 
-                ref={flipBookRef} 
-                width={pageWidth} 
-                height={pageHeight+140} 
-                size="fixed" 
-                showCover={true} 
-                mobileScrollSupport={true} 
-                onFlip={handleFlip} 
-                startPage={currentPage - 1} 
+                ref={flipBookRef}
+                width={pageWidth}
+                height={pageHeight + 140} 
+                size="fixed"
+                showCover={true}
+                mobileScrollSupport={true}
+                onFlip={handleFlip}
+                startPage={currentPage - 1}
               >
                 {Array.from({ length: numPages }, (_, index) => (
                   <div className="page bg-white" key={`page_${index + 1}`}>

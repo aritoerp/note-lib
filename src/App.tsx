@@ -32,7 +32,7 @@ function App() {
             <Route path="news" element={<NewsPage />} />
             <Route path="news/:newsId" element={<NewsDetailPage />} />
             <Route path="learning-materials" element={<LearningMaterialsPage />} />
-            <Route path="learning-materials/:materialId" element={<LearningMaterialDetailPage />} />
+            <Route path="learning-materials/:materialCode" element={<LearningMaterialDetailPage />} />
             {/* --Chưa làm-- */}
             <Route path="profile" element={<ProfilePage />} />
             <Route path="admin" element={<AdminPage />} />

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import { BACKEND_HOST } from '../env';
+import { getFileUrl } from '../utils/fileUtils';
 
 const HomePage: React.FC = () => {
   const { accessToken, logout } = useAuth();
@@ -12,30 +14,22 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getImageUrl = (image_id: string | null | undefined) => {
-    if (image_id && accessToken) {
-      const tokenPart = accessToken.split(".")[2];
-      return `https://api2dev.arito.vn/api/v1/DownloadFile0/${image_id}/${tokenPart}`;
-    }
-    return 'https://placehold.co/400x400';
-  };
-
   useEffect(() => {
     const fetchAll = async () => {
       setLoading(true);
       setError(null);
       try {
-        const featuredRes = await axios.post('https://thuvien.truongso.vn/web/featured', JSON.stringify({
+        const featuredRes = await axios.post(`${BACKEND_HOST}/featured`, JSON.stringify({
           accessToken,
           memvars: { loai_sach: '', pageIndex: 0 }
         }), { headers: { 'Content-Type': 'application/json' } });
 
-        const newRes = await axios.post('https://thuvien.truongso.vn/web/recent', JSON.stringify({
+        const newRes = await axios.post(`${BACKEND_HOST}/recent`, JSON.stringify({
           accessToken,
           memvars: { loai_sach: '', pageIndex: 0 }
         }), { headers: { 'Content-Type': 'application/json' } });
 
-        const popRes = await axios.post('https://thuvien.truongso.vn/web/popular', JSON.stringify({
+        const popRes = await axios.post(`${BACKEND_HOST}/popular`, JSON.stringify({
           accessToken,
           memvars: { loai_sach: '', pageIndex: 0 }
         }), { headers: { 'Content-Type': 'application/json' } });
@@ -85,7 +79,7 @@ const HomePage: React.FC = () => {
                 <Link key={book.id} to={`/books/${book.id}`} className="block h-full group">
                   <div className="flex flex-col h-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <img
-                      src={getImageUrl(book.image_id)}
+                      src={getFileUrl(accessToken, book.image_id, '/images/400x400.svg')}
                       alt={book.text}
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -119,7 +113,7 @@ const HomePage: React.FC = () => {
                 <Link key={book.id} to={`/books/${book.id}`} className="block h-full group">
                   <div className="flex flex-col h-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <img
-                      src={getImageUrl(book.image_id)}
+                      src={getFileUrl(accessToken, book.image_id, '/images/400x400.svg')}
                       alt={book.text}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -151,7 +145,7 @@ const HomePage: React.FC = () => {
                 <Link key={book.id} to={`/books/${book.id}`} className="block h-full group">
                   <div className="flex flex-col h-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <img
-                      src={getImageUrl(book.image_id)}
+                      src={getFileUrl(accessToken, book.image_id, '/images/400x400.svg')}
                       alt={book.text}
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
