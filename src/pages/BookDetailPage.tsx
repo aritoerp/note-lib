@@ -43,7 +43,6 @@ const BookDetailPage: React.FC = () => {
         }
       } catch (err) {
         setError('Lỗi khi gọi API');
-        logout();
       }
       setLoading(false);
     };

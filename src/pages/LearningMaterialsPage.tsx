@@ -204,7 +204,7 @@ const LearningMaterialsPage: React.FC = () => {
           )}
 
           {/* Statistics */}
-          {/* <div className="mt-16 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl p-8 text-white">
+          <div className="mt-16 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl p-8 text-white">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Thống kê học liệu</h2>
               <p className="text-emerald-100">Kho tài nguyên học tập đa dạng và phong phú</p>
@@ -236,7 +236,7 @@ const LearningMaterialsPage: React.FC = () => {
                 <div className="text-emerald-100">Lượt xem</div>
               </div>
             </div>
-          </div> */}
+          </div>
         </>
       )}
     </div>
