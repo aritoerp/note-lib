@@ -39,7 +39,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src }) => {
     const audio = audioRef.current;
     if (!audio || !audio.duration) return;
 
-    audio.currentTime = currentTime;
     setCurrentTime(audio.currentTime);
     setProgress((audio.currentTime / audio.duration) * 100);
   };

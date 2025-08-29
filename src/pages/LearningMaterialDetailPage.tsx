@@ -109,6 +109,7 @@ const LearningMaterialDetailPage: React.FC = () => {
     const fileUrl = getFileUrl(accessToken, material.image_id, material.type == 'IMAGE' ? '/images/400x400.svg' : '');
     switch (material.type) {
       case 'VIDEO':
+      case 'ELEARNING':
         return (
           <div className="bg-black rounded-xl overflow-hidden aspect-video">
             <video
@@ -116,8 +117,6 @@ const LearningMaterialDetailPage: React.FC = () => {
               src={fileUrl}
               controls
               autoPlay={true}
-              onLoadedMetadata={(e) => console.log('Video loaded:', e.currentTarget.duration)}
-              onCanPlay={() => console.log('Video is ready to seek')}
             />
           </div>
         );

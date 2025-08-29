@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext'; // <-- THÊM IMPORT NÀY
 import { API_HOST, BACKEND_HOST } from '../env';
 
 // --- Cấu hình Worker cho react-pdf ---
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/pdf.worker.min.mjs`;
 
 // FIX 1: TẠO CUSTOM HOOK `useDebounce` (Giữ nguyên)
 function useDebounce<T>(value: T, delay: number): T {

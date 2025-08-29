@@ -33,7 +33,6 @@ const CategoriesPage: React.FC = () => {
           headers: { 'Content-Type': 'application/json' }
         });
         if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {
-          console.log(response.data.data);
           setCategories(response.data.data);
         } else {
           setError('Không lấy được danh sách thể loại');

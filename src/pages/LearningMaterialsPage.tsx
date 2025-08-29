@@ -210,25 +210,18 @@ const LearningMaterialsPage: React.FC = () => {
               <p className="text-emerald-100">Kho tài nguyên học tập đa dạng và phong phú</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold mb-2">
-                  {materials.filter(m => m.type === 'VIDEO').length}
-                </div>
-                <div className="text-emerald-100">Video</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold mb-2">
-                  {materials.filter(m => m.type === 'IMAGE').length}
-                </div>
-                <div className="text-emerald-100">Hình ảnh</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold mb-2">
-                  {materials.filter(m => m.type === 'AUDIO').length}
-                </div>
-                <div className="text-emerald-100">Sách nói</div>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+              {types.map((type) => {
+                if (type == '') return '';
+                return (
+                  <div className="text-center">
+                    <div className="text-3xl font-bold mb-2">
+                      {materials.filter(m => m.type === type).length}
+                    </div>
+                    <div className="text-emerald-100">{getTypeName(type)}</div>
+                  </div>
+                )
+              })}
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2">
                   {materials.reduce((sum, m) => sum + 0, 0).toLocaleString()}
